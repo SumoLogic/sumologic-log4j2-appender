@@ -75,4 +75,4 @@ To run this as web application make sure the log4j.properties file is in the cla
 
 ## License
 
-The Sumo Logic client library is published under the Apache Software License, Version 2.0. Please visit http://www.apache.org/licenses/LICENSE-2.0.txt for details.
+The Sumo Logic Log4j 2 Appender is published under the Apache Software License, Version 2.0. Please visit http://www.apache.org/licenses/LICENSE-2.0.txt for details.
