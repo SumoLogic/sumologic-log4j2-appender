@@ -18,7 +18,8 @@ The library can be added to your project using Maven Central by adding the follo
 
 ## Usage
 
-Here is a sample Log4j XML configuration file. Make sure to replace [collector-url] with the URL after creating an HTTP Hosted Collector Source in the Sumo Logic web application.
+### Log4J XML Configuration
+Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Collector Source in the Sumo Logic web application.
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -37,6 +38,26 @@ Here is a sample Log4j XML configuration file. Make sure to replace [collector-u
     </Loggers>
 </Configuration>
 ```
+
+### Parameters
+| Parameter          | Requred? | Default Value | Description                                                                                                                                |
+|--------------------|----------|---------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| name               | Yes      |               | Name used to register Log4j Appender                                                                                                       |
+| url                | Yes      |               | HTTP collection endpoint URL                                                                                                               |
+| proxyHost          | No       |               | Proxy host IP address                                                                                                                      |
+| proxyPort          | No       |               | Proxy host port number                                                                                                                     |
+| proxyAuth          | No       |               | For basic authentication proxy, set to "basic". For NTLM authentication proxy, set to "ntlm". For no authentication proxy, do not specify. |
+| proxyUser          | No       |               | Proxy host username for basic and NTLM authentication. For no authentication proxy, do not specify.                                        |
+| proxyPassword      | No       |               | Proxy host password for basic and NTLM authentication. For no authentication proxy, do not specify.                                        |
+| proxyDomain        | No       |               | Proxy host domain name for NTLM authentication only                                                                                        |
+| retryInterval      | No       | 10000         | Retry interval (in ms) if a request fails                                                                                                  |
+| connectionTimeout  | No       | 1000          | Timeout (in ms) for connection                                                                                                             |
+| socketTimeout      | No       | 60000         | Timeout (in ms) for a socket                                                                                                               |
+| messagesPerRequest | No       | 100           | Number of messages needed to be in the queue before flushing                                                                               |
+| maxFlushInterval   | No       | 10000         | Maximum interval (in ms) between flushes                                                                                                   |
+| sourceName         | No       |               | Source name to appear on Sumo Logic                                                                                                        |
+| flushingAccuracy   | No       | 250           | How often (in ms) that the flushing thread checks the message queue                                                                        |
+| maxQueueSizeBytes  | No       | 1000000       | Maximum capacity (in bytes) of the message queue                                                                                           |
 
 ## Development
 
