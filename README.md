@@ -22,7 +22,7 @@ Here is a sample Log4j XML configuration file. Make sure to replace [collector-u
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug">
+<Configuration>
     <Appenders>
         <SumoLogicAppender
                 name="SumoAppender"
