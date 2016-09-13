@@ -18,60 +18,51 @@ The library can be added to your project using Maven Central by adding the follo
 
 ## Usage
 
-Here is a sample log4.properties file. Make sure to replace [collector-url] with the URL from the Sumo Logic UI.
+### Log4J XML Configuration
+Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Collector Source in the Sumo Logic web application.
 
-TODO Replace this example
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <SumoLogicAppender
+                name="SumoAppender"
+                url="[collector-url]">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS ZZZZ} [%t] %-5p %c - %m%n" />
+        </SumoLogicAppender>
+    </Appenders>
+    <Loggers>
+        <Root level="all" additivity="false">
+            <AppenderRef ref="SumoAppender" />
+        </Root>
+    </Loggers>
+</Configuration>
+```
 
-    # Root logger option
-    log4j.rootLogger=INFO, sumo
+### Parameters
+| Parameter          | Requred? | Default Value | Description                                                                                                                                |
+|--------------------|----------|---------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| name               | Yes      |               | Name used to register Log4j Appender                                                                                                       |
+| url                | Yes      |               | HTTP collection endpoint URL                                                                                                               |
+| proxyHost          | No       |               | Proxy host IP address                                                                                                                      |
+| proxyPort          | No       |               | Proxy host port number                                                                                                                     |
+| proxyAuth          | No       |               | For basic authentication proxy, set to "basic". For NTLM authentication proxy, set to "ntlm". For no authentication proxy, do not specify. |
+| proxyUser          | No       |               | Proxy host username for basic and NTLM authentication. For no authentication proxy, do not specify.                                        |
+| proxyPassword      | No       |               | Proxy host password for basic and NTLM authentication. For no authentication proxy, do not specify.                                        |
+| proxyDomain        | No       |               | Proxy host domain name for NTLM authentication only                                                                                        |
+| retryInterval      | No       | 10000         | Retry interval (in ms) if a request fails                                                                                                  |
+| connectionTimeout  | No       | 1000          | Timeout (in ms) for connection                                                                                                             |
+| socketTimeout      | No       | 60000         | Timeout (in ms) for a socket                                                                                                               |
+| messagesPerRequest | No       | 100           | Number of messages needed to be in the queue before flushing                                                                               |
+| maxFlushInterval   | No       | 10000         | Maximum interval (in ms) between flushes                                                                                                   |
+| sourceName         | No       |               | Source name to appear on Sumo Logic                                                                                                        |
+| flushingAccuracy   | No       | 250           | How often (in ms) that the flushing thread checks the message queue                                                                        |
+| maxQueueSizeBytes  | No       | 1000000       | Maximum capacity (in bytes) of the message queue                                                                                           |
 
-    # Direct log messages to sumo
-    log4j.appender.sumo=com.sumologic.log4j.SumoLogicAppender
-    log4j.appender.sumo.layout=org.apache.log4j.PatternLayout
-    log4j.appender.sumo.layout.ConversionPattern=%d{DATE} %5p %c{1}:%L - %m%n
-    log4j.appender.sumo.url=<YOUR_URL_HERE>
-    log4j.appender.sumo.proxyAuth=<YOUR AUTHTYPE: basic or ntlm>
-    log4j.appender.sumo.proxyHost=<YOUR HOSTNAME>
-    log4j.appender.sumo.proxyPort=<YOUR PORT>
-    log4j.appender.sumo.proxyUser=<YOUR_USERNAME>
-    log4j.appender.sumo.proxyPassword=<YOUR_PASSWORD>
-    log4j.appender.sumo.proxyDomain=<YOUR_NTLM_DOMAIN>
+## Development
 
-## Building
-
-TODO Replace these steps
-
-To build:
+To compile the plugin:
 - Run "mvn clean package" on the pom.xml in the main level of this project.
-- The pom is packaging all of the dependent JAR files into one massive jar file called "uber-sumo-log4j-appender-1.0-SNAPSHOT.jar". If you do not want all of this, remove the following XML from the pom.xml file:
-
-	<build>
-		<plugins>
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-shade-plugin</artifactId>
-			    <executions>
-			        <execution>
-			            <phase>package</phase>
-			            <goals>
-			                <goal>shade</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-			    <configuration>
-			        <finalName>uber-${artifactId}-${version}</finalName>
-			    </configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-To run this as a stand alone Java application:
-- create a Java main, follow "com.sumologic.log4j.SumoLogicAppenderExample".
-- place the log4j.properties file under "/src/main/resources/"
-- if you created a main called "com.sumologic.log4j.SumoLogicAppenderExample", 
-then run: "java -cp target/uber-sumo-log4j-appender-1.0-SNAPSHOT.jar com.sumologic.log4j.SumoLogicAppenderExample" to see it in action. 
-
-To run this as web application make sure the log4j.properties file is in the classpath. In many cases you will want it in your "WEB-INF/lib" folder.
 
 ## License
 
