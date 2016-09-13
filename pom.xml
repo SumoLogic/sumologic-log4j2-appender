@@ -104,8 +104,8 @@
     </dependencies>
 
   <scm>
-    <connection>scm:svn:http://svn.sonatype.org/spice/tags/sumologic-log4j2-appender</connection>
-    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/sumologic-log4j2-appender</developerConnection>
-    <url>http://svn.sonatype.org/spice/tags/sumologic-log4j2-appender</url>
+    <connection>scm:svn:http://svn.sonatype.org/spice/tags/sumologic-log4j2-appender-1.0</connection>
+    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/sumologic-log4j2-appender-1.0</developerConnection>
+    <url>http://svn.sonatype.org/spice/tags/sumologic-log4j2-appender-1.0</url>
   </scm>
 </project>
