@@ -28,7 +28,7 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
         <SumoLogicAppender
                 name="SumoAppender"
                 url="[collector-url]">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS ZZZZ} [%t] %-5p %c - %m%n" />
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS Z} [%t] %-5p %c - %m%n" />
         </SumoLogicAppender>
     </Appenders>
     <Loggers>
