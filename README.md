@@ -26,7 +26,7 @@ TODO Replace this example
     log4j.rootLogger=INFO, sumo
 
     # Direct log messages to sumo
-    log4j.appender.sumo=com.sumologic.log4j.BufferedSumoLogicAppender
+    log4j.appender.sumo=com.sumologic.log4j.SumoLogicAppender
     log4j.appender.sumo.layout=org.apache.log4j.PatternLayout
     log4j.appender.sumo.layout.ConversionPattern=%d{DATE} %5p %c{1}:%L - %m%n
     log4j.appender.sumo.url=<YOUR_URL_HERE>
