@@ -11,8 +11,8 @@ The library can be added to your project using Maven Central by adding the follo
 ```
 <dependency>
     <groupId>com.sumologic.plugins.log4j</groupId>
-    <artifactId>TODO FILL ME IN</artifactId>
-    <version>TODO</version>
+    <artifactId>sumologic-log4j2-appender</artifactId>
+    <version>1.0</version>
 </dependency>
 ```
 
