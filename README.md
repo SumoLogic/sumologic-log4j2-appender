@@ -44,7 +44,7 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
 ```
 
 ### Parameters
-| Parameter          | Requred? | Default Value | Description                                                                                                                                |
+| Parameter          | Required? | Default Value | Description                                                                                                                                |
 |--------------------|----------|---------------|--------------------------------------------------------------------------------------------------------------------------------------------|
 | name               | Yes      |               | Name used to register Log4j Appender                                                                                                       |
 | url                | Yes      |               | HTTP collection endpoint URL                                                                                                               |
