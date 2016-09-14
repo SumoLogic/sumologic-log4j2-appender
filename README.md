@@ -25,6 +25,8 @@ Follow these instructions for [setting up an HTTP Source](http://help.sumologic.
 ### Log4J XML Configuration
 Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Collector Source in Sumo Logic.
 
+`log4j2.xml`:
+
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
