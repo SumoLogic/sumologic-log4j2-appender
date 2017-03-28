@@ -3,7 +3,9 @@
 A Log4J 2 appender that sends straight to Sumo Logic.
 
 Note: For the original Log4j appender, please see https://github.com/SumoLogic/sumo-log4j-appender
-
+# Versioning
+The version of this plugin will be of the format `X.Y.Z.a` where `X.Y.Z` is the log4j version it is compatible with,
+and `a` is the release version of this library. 
 # SumoLogicAppender
 The `SumoLogicAppender` is a log4j2 appender that utilizes a SumoLogic HTTP Collector.
 ## Installation
