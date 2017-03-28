@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="info">
-<Appenders>
+  <Appenders>
     <SumoLogicAppender
-            name="SumoAppender"
-            url="http://localhost:10010"
-            messagesPerRequest="1"
-            maxFlushInterval="100"
-            flushingAccuracy="10">
-        <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS Z} [%t] %-5p %c - %m%n" />
+        name="SumoAppender"
+        url="http://localhost:10010"
+        messagesPerRequest="1"
+        maxFlushInterval="100"
+        flushingAccuracy="10">
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS Z} [%t] %-5p %c - %m%n"/>
     </SumoLogicAppender>
-</Appenders>
-<Loggers>
+  </Appenders>
+  <Loggers>
     <Root level="all" additivity="false">
-        <AppenderRef ref="SumoAppender" />
+      <AppenderRef ref="SumoAppender"/>
     </Root>
-</Loggers>
+  </Loggers>
 </Configuration>
