@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sumologic.plugins.log4j</groupId>
   <artifactId>sumologic-log4j2-appender</artifactId>
-  <version>2.5.0.3</version>
+  <version>2.5.0.4-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Sumo Logic Log4J 2 Appender</name>
   <description>The Log4J 2 Appender for the Sumo Logic log management service</description>
@@ -154,6 +154,6 @@
     <url>https://github.com/metamx/sumologic-log4j2-appender.git</url>
     <connection>scm:git:git@github.com:metamx/sumologic-log4j2-appender.git</connection>
     <developerConnection>scm:git:git@github.com:metamx/sumologic-log4j2-appender.git</developerConnection>
-    <tag>sumologic-log4j2-appender-2.5.0.3</tag>
+    <tag>HEAD</tag>
   </scm>
 </project>
