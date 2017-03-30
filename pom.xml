@@ -156,4 +156,19 @@
     <developerConnection>scm:git:git@github.com:metamx/sumologic-log4j2-appender.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
+  <profiles>
+    <profile>
+      <id>central-local</id>
+      <distributionManagement>
+        <snapshotRepository>
+          <id>snapshots</id>
+          <url>https://metamx.artifactoryonline.com/metamx/libs-snapshots-local</url>
+        </snapshotRepository>
+        <repository>
+          <id>central-local</id>
+          <url>https://metamx.artifactoryonline.com/metamx/libs-releases-local</url>
+        </repository>
+      </distributionManagement>
+    </profile>
+  </profiles>
 </project>
