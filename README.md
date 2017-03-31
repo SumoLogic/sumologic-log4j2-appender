@@ -1,5 +1,7 @@
 # sumologic-log4j2-appender
 
+[![Build Status](https://travis-ci.org/metamx/sumologic-log4j2-appender.svg?branch=master)](https://travis-ci.org/metamx/sumologic-log4j2-appender)
+
 A Log4J 2 appender that sends straight to Sumo Logic.
 
 Note: For the original Log4j appender, please see https://github.com/SumoLogic/sumo-log4j-appender
