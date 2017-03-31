@@ -11,3 +11,7 @@ sudo: false
 cache:
   directories:
       - $HOME/.m2
+
+branches:
+  only:
+  - master
