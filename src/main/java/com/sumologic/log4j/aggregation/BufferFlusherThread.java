@@ -46,14 +46,21 @@ public abstract class BufferFlusherThread<In, Out> extends Thread
   private final long flushPeriod;
   private final TimeUnit flushPeriodUnit;
   private boolean terminating = false;
+  private final boolean flushOnError;
 
   private long timeOfLastFlush = System.currentTimeMillis();
 
-  protected BufferFlusherThread(BufferWithEviction<In> messageQueue, long flushPeriod, TimeUnit flushPeriodUnit)
+  protected BufferFlusherThread(
+      BufferWithEviction<In> messageQueue,
+      long flushPeriod,
+      TimeUnit flushPeriodUnit,
+      boolean flushOnError
+  )
   {
     this.messageQueue = messageQueue;
     this.flushPeriod = flushPeriod;
     this.flushPeriodUnit = flushPeriodUnit;
+    this.flushOnError = flushOnError;
     setDaemon(true);
   }
 
@@ -62,7 +69,9 @@ public abstract class BufferFlusherThread<In, Out> extends Thread
     final long currentTime = System.currentTimeMillis();
     final long dateOfNextFlush = timeOfLastFlush + getMaxFlushInterval();
 
-    return (currentTime >= dateOfNextFlush) || (messageQueue.size() >= getMessagesPerRequest());
+    return (currentTime >= dateOfNextFlush) || (messageQueue.size() >= getMessagesPerRequest()) || (flushOnError
+                                                                                                    && this.messageQueue
+                                                                                                        .hasError());
   }
 
   private void flushAndSend()
@@ -84,6 +93,7 @@ public abstract class BufferFlusherThread<In, Out> extends Thread
       final Out body = aggregate(messages);
       sendOut(body);
       timeOfLastFlush = System.currentTimeMillis();
+      messageQueue.setError(false);
     }
   }
 

@@ -70,6 +70,7 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
 | sourceName         | No       |               | Source name to appear on Sumo Logic                                                                                                        |
 | flushingAccuracy   | No       | 250           | How often (in ms) that the flushing thread checks the message queue                                                                        |
 | maxQueueSizeBytes  | No       | 1000000       | Maximum capacity (in bytes) of the message queue                                                                                           |
+| flushOnError       | No       | false         | Immediately flush to SumoLogic when a log event with level=Error,Fatal is emitted                                                          |
 
 ### NOTE: 
 The thread for sending data is a daemon thread. As such, if your connectivity to SumoLogic is disrupted and the

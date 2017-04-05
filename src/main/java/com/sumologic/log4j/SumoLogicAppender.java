@@ -1,11 +1,11 @@
 /**
- *  _____ _____ _____ _____    __    _____ _____ _____ _____
+ * _____ _____ _____ _____    __    _____ _____ _____ _____
  * |   __|  |  |     |     |  |  |  |     |   __|     |     |
  * |__   |  |  | | | |  |  |  |  |__|  |  |  |  |-   -|   --|
  * |_____|_____|_|_|_|_____|  |_____|_____|_____|_____|_____|
- *
+ * <p>
  * UNICORNS AT WARP SPEED SINCE 2010
- *
+ * <p>
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -13,9 +13,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -37,6 +37,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -97,7 +98,8 @@ public class SumoLogicAppender extends AbstractAppender
       final String sourceCategory,
       final long flushingAccuracy,
       final long maxQueueSizeBytes,
-      final long maxFlushTimeout
+      final long maxFlushTimeout,
+      final boolean flushOnError
   )
   {
     super(name, filter, layout, ignoreExceptions);
@@ -141,6 +143,7 @@ public class SumoLogicAppender extends AbstractAppender
         messagesPerRequest,
         maxFlushInterval,
         maxFlushTimeout,
+        flushOnError,
         sender,
         queue,
         logger
@@ -174,7 +177,8 @@ public class SumoLogicAppender extends AbstractAppender
       @PluginAttribute(value = "sourceHost") String sourceHost,
       @PluginAttribute(value = "sourceCategory") String sourceCategory,
       @PluginAttribute(value = "flushingAccuracy", defaultLong = DEFAULT_FLUSHING_ACCURACY) Long flushingAccuracy,
-      @PluginAttribute(value = "maxQueueSizeBytes", defaultLong = DEFAULT_MAX_QUEUE_SIZE_BYTES) Long maxQueueSizeBytes
+      @PluginAttribute(value = "maxQueueSizeBytes", defaultLong = DEFAULT_MAX_QUEUE_SIZE_BYTES) Long maxQueueSizeBytes,
+      @PluginAttribute(value = "flushOnError") Boolean flushOnError
   )
   {
 
@@ -219,7 +223,8 @@ public class SumoLogicAppender extends AbstractAppender
         sourceCategory,
         Optional.ofNullable(flushingAccuracy).orElse(DEFAULT_FLUSHING_ACCURACY),
         Optional.ofNullable(maxQueueSizeBytes).orElse(DEFAULT_MAX_QUEUE_SIZE_BYTES),
-        Optional.ofNullable(maxFlushTimeout).orElse(DEFAULT_MAX_FLUSH_TIMEOUT_MS)
+        Optional.ofNullable(maxFlushTimeout).orElse(DEFAULT_MAX_FLUSH_TIMEOUT_MS),
+        Optional.ofNullable(flushOnError).orElse(false)
     );
   }
 
@@ -234,6 +239,9 @@ public class SumoLogicAppender extends AbstractAppender
 
     try {
       queue.add(message);
+      if (event.getLevel().isInRange(Level.FATAL, Level.ERROR)) {
+        queue.setError(true);
+      }
     }
     catch (Exception e) {
       logger.error("Unable to insert log entry into log queue.", e);

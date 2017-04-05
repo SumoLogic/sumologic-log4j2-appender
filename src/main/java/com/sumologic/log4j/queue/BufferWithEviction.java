@@ -60,4 +60,8 @@ public abstract class BufferWithEviction<Q>
   public abstract int drainTo(Collection<Q> collection, int max);
 
   public abstract boolean add(Q element);
+
+  public abstract boolean hasError();
+
+  public abstract void setError(boolean hasError);
 }
