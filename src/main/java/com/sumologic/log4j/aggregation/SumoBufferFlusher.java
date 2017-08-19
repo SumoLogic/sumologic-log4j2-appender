@@ -45,17 +45,12 @@ public class SumoBufferFlusher {
             long flushingAccuracy,
             long messagesPerRequest,
             long maxFlushInterval,
-            String sourceName,
             SumoHttpSender sender,
             BufferWithEviction<String> buffer) {
-
         this.flushingAccuracy = flushingAccuracy;
-
         flushingTask = new SumoBufferFlushingTask(buffer);
-
         flushingTask.setMessagesPerRequest(messagesPerRequest);
         flushingTask.setMaxFlushInterval(maxFlushInterval);
-        flushingTask.setName(sourceName);
         flushingTask.setSender(sender);
     }
 

@@ -72,18 +72,19 @@ public class SumoLogicAppender extends AbstractAppender {
                                 String url, ProxySettings proxySettings,
                                 Integer retryInterval, Integer connectionTimeout, Integer socketTimeout,
                                 Long messagesPerRequest, Long maxFlushInterval, String sourceName,
+                                String sourceCategory, String sourceHost,
                                 Long flushingAccuracy, Long maxQueueSizeBytes) {
         super(name, filter, layout, ignoreExceptions);
 
         // Initialize queue
-         queue = new BufferWithFifoEviction<String>(maxQueueSizeBytes, new CostBoundedConcurrentQueue.CostAssigner<String>() {
-             @Override
-             public long cost(String e) {
-                 // Note: This is only an estimate for total byte usage, since in UTF-8 encoding,
-                 // the size of one character may be > 1 byte.
-                 return e.length();
-             }
-         });
+        queue = new BufferWithFifoEviction<String>(maxQueueSizeBytes, new CostBoundedConcurrentQueue.CostAssigner<String>() {
+         @Override
+         public long cost(String e) {
+             // Note: This is only an estimate for total byte usage, since in UTF-8 encoding,
+             // the size of one character may be > 1 byte.
+             return e.length();
+         }
+        });
 
         // Initialize sender
         sender = new SumoHttpSender();
@@ -91,6 +92,9 @@ public class SumoLogicAppender extends AbstractAppender {
         sender.setConnectionTimeout(connectionTimeout);
         sender.setSocketTimeout(socketTimeout);
         sender.setUrl(url);
+        sender.setSourceName(sourceName);
+        sender.setSourceCategory(sourceCategory);
+        sender.setSourceHost(sourceHost);
         sender.setProxySettings(proxySettings);
         sender.init();
 
@@ -98,7 +102,6 @@ public class SumoLogicAppender extends AbstractAppender {
         flusher = new SumoBufferFlusher(flushingAccuracy,
                 messagesPerRequest,
                 maxFlushInterval,
-                sourceName,
                 sender,
                 queue);
         flusher.start();
@@ -122,6 +125,8 @@ public class SumoLogicAppender extends AbstractAppender {
             @PluginAttribute(value = "messagesPerRequest", defaultLong = DEFAULT_MESSAGES_PER_REQUEST) Long messagesPerRequest,
             @PluginAttribute(value = "maxFlushInterval", defaultLong = DEFAULT_MAX_FLUSH_INTERVAL) Long maxFlushInterval,
             @PluginAttribute(value = "sourceName") String sourceName,
+            @PluginAttribute(value = "sourceCategory") String sourceCategory,
+            @PluginAttribute(value = "sourceHost") String sourceHost,
             @PluginAttribute(value = "flushingAccuracy", defaultLong = DEFAULT_FLUSHING_ACCURACY) Long flushingAccuracy,
             @PluginAttribute(value = "maxQueueSizeBytes", defaultLong = DEFAULT_MAX_QUEUE_SIZE_BYTES) Long maxQueueSizeBytes) {
 
@@ -142,7 +147,8 @@ public class SumoLogicAppender extends AbstractAppender {
         ProxySettings proxySettings = new ProxySettings(proxyHost, proxyPort, proxyAuth, proxyUser, proxyPassword, proxyDomain);
 
         return new SumoLogicAppender(name, filter, layout, true, url, proxySettings, retryInterval, connectionTimeout,
-                socketTimeout, messagesPerRequest, maxFlushInterval, sourceName, flushingAccuracy, maxQueueSizeBytes);
+                socketTimeout, messagesPerRequest, maxFlushInterval, sourceName, sourceCategory,
+                sourceHost, flushingAccuracy, maxQueueSizeBytes);
     }
 
     public void append(LogEvent event) {

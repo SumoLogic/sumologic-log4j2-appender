@@ -132,17 +132,12 @@ public class BufferFlushingTaskTest {
             }
 
             @Override
-            protected String getName() {
-                return "No-name";
-            }
-
-            @Override
             protected List<String> aggregate(List<String> messages) {
                 return messages;
             }
 
             @Override
-            protected void sendOut(List<String> body, String name) {
+            protected void sendOut(List<String> body) {
                 tasks.add(body);
             }
         };
