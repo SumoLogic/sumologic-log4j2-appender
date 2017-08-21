@@ -45,7 +45,6 @@ public class SumoLogicAppenderTest {
 
     private MockHttpServer server;
     private AggregatingHttpHandler handler;
-    private Logger loggerInTest = LogManager.getLogger(SumoLogicAppenderTest.class);
 
     @Before
     public void setUp() throws Exception {
@@ -61,7 +60,9 @@ public class SumoLogicAppenderTest {
     }
 
     @Test
-    public void testSendingMultipleMessages() throws Exception {
+    public void testMessagesWithMetadata() throws Exception {
+        // See ./resources/log4j2.xml for definition
+        Logger loggerInTest = LogManager.getLogger("TestAppender1");
         int numMessages = 5;
         for (int i = 0; i < numMessages; i ++) {
             loggerInTest.info("info " + i);
@@ -71,6 +72,28 @@ public class SumoLogicAppenderTest {
         assertEquals(numMessages, handler.getExchanges().size());
         for(MaterializedHttpRequest request: handler.getExchanges()) {
             assertEquals(true, request.getBody().contains("info"));
+            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Name").equals("mySource"));
+            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Category").equals("myCategory"));
+            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Host").equals("myHost"));
+        }
+    }
+
+    @Test
+    public void testMessagesWithoutMetadata() throws Exception {
+        // See ./resources/log4j2.xml for definition
+        Logger loggerInTest = LogManager.getLogger("TestAppender2");
+        int numMessages = 5;
+        for (int i = 0; i < numMessages; i ++) {
+            loggerInTest.info("info " + i);
+            Thread.sleep(150);
+        }
+
+        assertEquals(numMessages, handler.getExchanges().size());
+        for(MaterializedHttpRequest request: handler.getExchanges()) {
+            assertEquals(true, request.getBody().contains("info"));
+            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Name") == null);
+            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Category") == null);
+            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Host") == null);
         }
     }
 }

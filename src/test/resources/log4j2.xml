@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="info">
 <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
     <SumoLogicAppender
-            name="SumoAppender"
+            name="TestSumoAppender1"
+            url="http://localhost:10010"
+            sourceName="mySource"
+            sourceHost="myHost"
+            sourceCategory="myCategory"
+            messagesPerRequest="1"
+            maxFlushInterval="100"
+            flushingAccuracy="10">
+        <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS Z} [%t] %-5p %c - %m%n" />
+    </SumoLogicAppender>
+    <SumoLogicAppender
+            name="TestSumoAppender2"
             url="http://localhost:10010"
             messagesPerRequest="1"
             maxFlushInterval="100"
@@ -11,8 +25,14 @@
     </SumoLogicAppender>
 </Appenders>
 <Loggers>
-    <Root level="all" additivity="false">
-        <AppenderRef ref="SumoAppender" />
+    <Root level="all">
+        <AppenderRef ref="Console" />
     </Root>
+    <Logger name="TestAppender1" level="all">
+        <AppenderRef ref="TestSumoAppender1"/>
+    </Logger>
+    <Logger name="TestAppender2" level="all">
+        <AppenderRef ref="TestSumoAppender2"/>
+    </Logger>
 </Loggers>
 </Configuration>

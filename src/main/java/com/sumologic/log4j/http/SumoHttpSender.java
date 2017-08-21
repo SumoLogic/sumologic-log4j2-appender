@@ -46,14 +46,19 @@ import java.io.IOException;
 public class SumoHttpSender {
     private static final Logger logger = StatusLogger.getLogger();
 
+    private static final String SUMO_SOURCE_NAME_HEADER = "X-Sumo-Name";
+    private static final String SUMO_SOURCE_CATEGORY_HEADER = "X-Sumo-Category";
+    private static final String SUMO_SOURCE_HOST_HEADER = "X-Sumo-Host";
+
     private long retryInterval = 10000L;
-
-    private volatile String url = null;
-    private volatile ProxySettings proxySettings = null;
-
     private int connectionTimeout = 1000;
     private int socketTimeout = 60000;
-    private volatile CloseableHttpClient httpClient = null;
+    private String url = null;
+    private String sourceName = null;
+    private String sourceCategory = null;
+    private String sourceHost = null;
+    private ProxySettings proxySettings = null;
+    private CloseableHttpClient httpClient = null;
 
     public ProxySettings getProxySettings() {
         return proxySettings;
@@ -69,6 +74,18 @@ public class SumoHttpSender {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
+    }
+
+    public void setSourceCategory(String sourceCategory) {
+        this.sourceCategory = sourceCategory;
+    }
+
+    public void setSourceHost(String sourceHost) {
+        this.sourceHost = sourceHost;
     }
 
     public void setConnectionTimeout(int connectionTimeout) {
@@ -104,15 +121,15 @@ public class SumoHttpSender {
         httpClient = null;
     }
 
-    public void send(String body, String name) {
-        keepTrying(body, name);
+    public void send(String body) {
+        keepTrying(body);
     }
 
-    private void keepTrying(String body, String name) {
+    private void keepTrying(String body) {
         boolean success = false;
         do {
             try {
-                trySend(body, name);
+                trySend(body);
                 success = true;
             } catch (Exception e) {
                 try {
@@ -124,16 +141,16 @@ public class SumoHttpSender {
         } while (!success && !Thread.currentThread().isInterrupted());
     }
 
-    private void trySend(String body, String name) throws IOException {
+    private void trySend(String body) throws IOException {
         HttpPost post = null;
         try {
             if (url == null)
                 throw new IOException("Unknown endpoint");
 
             post = new HttpPost(url);
-            if (name != null) {
-                post.setHeader("X-Sumo-Name", name);
-            }
+            safeSetHeader(post, SUMO_SOURCE_NAME_HEADER, sourceName);
+            safeSetHeader(post, SUMO_SOURCE_CATEGORY_HEADER, sourceCategory);
+            safeSetHeader(post, SUMO_SOURCE_HOST_HEADER, sourceHost);
             post.setEntity(new StringEntity(body, Consts.UTF_8));
             HttpResponse response = httpClient.execute(post);
             int statusCode = response.getStatusLine().getStatusCode();
@@ -155,6 +172,12 @@ public class SumoHttpSender {
             } catch (Exception ignore) {
             }
             throw e;
+        }
+    }
+
+    private void safeSetHeader(HttpPost post, String name, String value) {
+        if (value != null && !value.trim().isEmpty()) {
+            post.setHeader(name, value);
         }
     }
 }
