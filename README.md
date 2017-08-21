@@ -12,7 +12,7 @@ The library can be added to your project using Maven Central by adding the follo
 <dependency>
     <groupId>com.sumologic.plugins.log4j</groupId>
     <artifactId>sumologic-log4j2-appender</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
@@ -50,6 +50,9 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
 |--------------------|----------|---------------|--------------------------------------------------------------------------------------------------------------------------------------------|
 | name               | Yes      |               | Name used to register Log4j Appender                                                                                                       |
 | url                | Yes      |               | HTTP collection endpoint URL                                                                                                               |
+| sourceName         | No       |               | Source name to appear when searching on Sumo Logic by `_sourceName`                                                                                                        |
+| sourceHost         | No       |               | Source host to appear when searching on Sumo Logic by `_sourceHost`                                                                                                         |
+| sourceCategory         | No       |               | Source category to appear when searching on Sumo Logic c by `_sourceCategory`                                                                                                         |
 | proxyHost          | No       |               | Proxy host IP address                                                                                                                      |
 | proxyPort          | No       |               | Proxy host port number                                                                                                                     |
 | proxyAuth          | No       |               | For basic authentication proxy, set to "basic". For NTLM authentication proxy, set to "ntlm". For no authentication proxy, do not specify. |
@@ -61,7 +64,6 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
 | socketTimeout      | No       | 60000         | Timeout (in ms) for a socket                                                                                                               |
 | messagesPerRequest | No       | 100           | Number of messages needed to be in the queue before flushing                                                                               |
 | maxFlushInterval   | No       | 10000         | Maximum interval (in ms) between flushes                                                                                                   |
-| sourceName         | No       |               | Source name to appear on Sumo Logic                                                                                                        |
 | flushingAccuracy   | No       | 250           | How often (in ms) that the flushing thread checks the message queue                                                                        |
 | maxQueueSizeBytes  | No       | 1000000       | Maximum capacity (in bytes) of the message queue                                                                                           |
 
