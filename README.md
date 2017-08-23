@@ -71,6 +71,22 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
 
 To compile the plugin:
 - Run "mvn clean package" on the pom.xml in the main level of this project.
+- To test running a locally built JAR file, you may need to manually add the following dependencies to your project:
+```
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.8.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+    </dependencies>
+```
 
 ## License
 
