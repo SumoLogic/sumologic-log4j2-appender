@@ -4,6 +4,10 @@ A Log4J 2 appender that sends straight to Sumo Logic.
 
 Note: For the original Log4j appender, please see https://github.com/SumoLogic/sumo-log4j-appender
 
+| TLS Deprecation Notice |
+| --- |
+| In keeping with industry standard security best practices, as of May 31, 2018, the Sumo Logic service will only support TLS version 1.2 going forward. Verify that all connections to Sumo Logic endpoints are made from software that supports TLS 1.2. |
+
 ## Installation
 
 The library can be added to your project using Maven Central by adding the following dependency to a POM file:
