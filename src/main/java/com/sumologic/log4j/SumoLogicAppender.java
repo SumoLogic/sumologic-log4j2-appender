@@ -34,8 +34,8 @@ import com.sumologic.log4j.queue.BufferWithFifoEviction;
 import com.sumologic.log4j.queue.CostBoundedConcurrentQueue;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusLogger;
+
 import java.io.Serializable;
 
 /**
@@ -164,6 +165,23 @@ public class SumoLogicAppender extends AbstractAppender {
             queue.add(message);
         } catch (Exception e) {
             logger.error("Unable to insert log entry into log queue. ", e);
+        }
+    }
+
+    public void setSourceName(String sourceName) {
+        if (sender != null)
+            sender.setSourceName(sourceName);
+    }
+
+    public void setSourceCategory(String sourceCategory) {
+        if (sender != null) {
+            sender.setSourceCategory(sourceCategory);
+        }
+    }
+
+    public void setUrl(String url) {
+        if (sender != null) {
+            sender.setUrl(url);
         }
     }
 
