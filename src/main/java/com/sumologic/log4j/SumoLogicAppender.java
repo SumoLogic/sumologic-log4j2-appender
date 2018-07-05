@@ -189,11 +189,12 @@ public class SumoLogicAppender extends AbstractAppender {
     public void stop() {
         super.stop();
         try {
+            flusher.stop();
+            flusher = null;
+
             sender.close();
             sender = null;
 
-            flusher.stop();
-            flusher = null;
         } catch (Exception e) {
             logger.error("Unable to close appender", e);
         }
