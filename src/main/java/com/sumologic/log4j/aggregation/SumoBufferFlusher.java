@@ -88,6 +88,7 @@ public class SumoBufferFlusher {
         }
 
         // flush last time before dying
+        flushingTask.setMessagesPerRequest(1L);
         flushingTask.run();
     }
 
