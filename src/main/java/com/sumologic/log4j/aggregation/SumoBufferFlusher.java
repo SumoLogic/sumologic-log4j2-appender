@@ -87,7 +87,7 @@ public class SumoBufferFlusher {
             executor.shutdownNow();
         }
 
-        // flush last time before dying
+        // To satisfy needsFlushing in BufferFlushingTask for last flush before dying
         flushingTask.setMessagesPerRequest(1L);
         flushingTask.run();
     }
