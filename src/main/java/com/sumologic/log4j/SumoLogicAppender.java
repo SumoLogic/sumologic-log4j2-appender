@@ -62,7 +62,7 @@ public class SumoLogicAppender extends AbstractAppender {
     private static final long DEFAULT_MAX_FLUSH_INTERVAL = 10000;       // Maximum interval between flushes (ms)
     private static final long DEFAULT_FLUSHING_ACCURACY = 250;          // How often the flushed thread looks into the message queue (ms)
     private static final long DEFAULT_MAX_QUEUE_SIZE_BYTES = 1000000;   // Maximum message queue size (bytes)
-    private static final boolean FLUSH_ALL_MESSAGES_BEFORE_STOPPING = false;   // Maximum message queue size (bytes)
+    private static final boolean FLUSH_ALL_MESSAGES_BEFORE_STOPPING = false;   // Flush Before Stoping irrespective of  flushingAccuracy
 
     private SumoHttpSender sender;
     private SumoBufferFlusher flusher;
