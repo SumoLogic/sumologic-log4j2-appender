@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Log4J 2 Appender that sends log messages to Sumo Logic.
@@ -188,25 +189,31 @@ public class SumoLogicAppender extends AbstractAppender {
         }
     }
 
-    @Override
-    public void stop() {
-        super.stop();
-        try {
-            flusher.stop();
-            flusher = null;
+  @Override
+  public boolean stop(final long timeout, final TimeUnit timeUnit) {
+      logger.debug("Stopping SumoLogicAppender {}", getName());
+      setStopping();
+      final boolean stopped = super.stop(timeout, timeUnit, false);
+      try {
+          flusher.stop();
+          logger.debug("flusher has been stopped");
+          flusher = null;
 
-            sender.close();
-            sender = null;
+          sender.close();
+          sender = null;
 
-        } catch (Exception e) {
-            logger.error("Unable to close appender", e);
-        }
-    }
+      } catch (Exception e) {
+        logger.error("Unable to close appender", e);
+      }
+      setStopped();
+      logger.debug("SumoLogicAppender {} has been stopped", getName());
+      return stopped;
+  }
 
-    // Private bits.
+  // Private bits.
 
-    private boolean checkEntryConditions() {
-        return sender != null && sender.isInitialized();
-    }
+  private boolean checkEntryConditions() {
+    return sender != null && sender.isInitialized();
+  }
 
 }
