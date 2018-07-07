@@ -72,6 +72,32 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
 | maxQueueSizeBytes     | No       | 1000000       | Maximum capacity (in bytes) of the message queue
 | flushAllBeforeStopping| No       | false         | Flush all messages before stopping irrespective of flushingAccuracy
 
+#### Example with Optional Parameters
+`log4j2.xml`:
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <SumoLogicAppender
+                name="SumoAppender"
+                url="[collector-url]"
+                flushAllBeforeStopping="true"
+                sourceHost="Appender-$${env:HOSTNAME}"
+                sourceCategory="${sys:appName}"
+                proxyHost="1.2.3.4"
+                proxyPort="3128">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS Z} [%t] %-5p %c - %m%n" />
+        </SumoLogicAppender>
+    </Appenders>
+    <Loggers>
+        <Root level="all" additivity="false">
+            <AppenderRef ref="SumoAppender" />
+        </Root>
+    </Loggers>
+</Configuration>
+```
+
 ## Development
 
 To compile the plugin:
