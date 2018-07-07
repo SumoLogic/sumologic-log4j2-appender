@@ -70,7 +70,7 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
 | maxFlushInterval      | No       | 10000         | Maximum interval (in ms) between flushes                                                                                                   |
 | flushingAccuracy      | No       | 250           | How often (in ms) that the flushing thread checks the message queue                                                                        |
 | maxQueueSizeBytes     | No       | 1000000       | Maximum capacity (in bytes) of the message queue
-| flushAllBeforeStopping| No       | false         | Flush all messages before stopping irrespective of flushingAccuracy
+| flushAllBeforeStopping| No       | false         | Flush all messages before stopping regardless of flushingAccuracy
 
 #### Example with Optional Parameters
 `log4j2.xml`:
@@ -108,7 +108,7 @@ To compile the plugin:
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.8.2</version>
+            <version>2.11.0</version>
         </dependency>
 
         <dependency>
