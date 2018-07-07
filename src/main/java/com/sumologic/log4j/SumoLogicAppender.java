@@ -45,6 +45,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Log4J 2 Appender that sends log messages to Sumo Logic.
@@ -62,6 +63,7 @@ public class SumoLogicAppender extends AbstractAppender {
     private static final long DEFAULT_MAX_FLUSH_INTERVAL = 10000;       // Maximum interval between flushes (ms)
     private static final long DEFAULT_FLUSHING_ACCURACY = 250;          // How often the flushed thread looks into the message queue (ms)
     private static final long DEFAULT_MAX_QUEUE_SIZE_BYTES = 1000000;   // Maximum message queue size (bytes)
+    private static final boolean FLUSH_ALL_MESSAGES_BEFORE_STOPPING = false;   // Flush Before Stoping irrespective of  flushingAccuracy
 
     private SumoHttpSender sender;
     private SumoBufferFlusher flusher;
@@ -74,7 +76,7 @@ public class SumoLogicAppender extends AbstractAppender {
                                 Integer retryInterval, Integer connectionTimeout, Integer socketTimeout,
                                 Long messagesPerRequest, Long maxFlushInterval, String sourceName,
                                 String sourceCategory, String sourceHost,
-                                Long flushingAccuracy, Long maxQueueSizeBytes) {
+                                Long flushingAccuracy, Long maxQueueSizeBytes, Boolean flushAllBeforeStopping) {
         super(name, filter, layout, ignoreExceptions);
 
         // Initialize queue
@@ -104,7 +106,8 @@ public class SumoLogicAppender extends AbstractAppender {
                 messagesPerRequest,
                 maxFlushInterval,
                 sender,
-                queue);
+                queue,
+                flushAllBeforeStopping);
         flusher.start();
     }
 
@@ -129,7 +132,8 @@ public class SumoLogicAppender extends AbstractAppender {
             @PluginAttribute(value = "sourceCategory") String sourceCategory,
             @PluginAttribute(value = "sourceHost") String sourceHost,
             @PluginAttribute(value = "flushingAccuracy", defaultLong = DEFAULT_FLUSHING_ACCURACY) Long flushingAccuracy,
-            @PluginAttribute(value = "maxQueueSizeBytes", defaultLong = DEFAULT_MAX_QUEUE_SIZE_BYTES) Long maxQueueSizeBytes) {
+            @PluginAttribute(value = "maxQueueSizeBytes", defaultLong = DEFAULT_MAX_QUEUE_SIZE_BYTES) Long maxQueueSizeBytes,
+            @PluginAttribute(value = "flushAllBeforeStopping", defaultBoolean = FLUSH_ALL_MESSAGES_BEFORE_STOPPING) Boolean flushAllBeforeStopping) {
 
         if (name == null) {
             logger.error("No name provided for SumoLogicAppender");
@@ -149,7 +153,7 @@ public class SumoLogicAppender extends AbstractAppender {
 
         return new SumoLogicAppender(name, filter, layout, true, url, proxySettings, retryInterval, connectionTimeout,
                 socketTimeout, messagesPerRequest, maxFlushInterval, sourceName, sourceCategory,
-                sourceHost, flushingAccuracy, maxQueueSizeBytes);
+                sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping);
     }
 
     public void append(LogEvent event) {
@@ -185,24 +189,31 @@ public class SumoLogicAppender extends AbstractAppender {
         }
     }
 
-    @Override
-    public void stop() {
-        super.stop();
-        try {
-            sender.close();
-            sender = null;
+  @Override
+  public boolean stop(final long timeout, final TimeUnit timeUnit) {
+      logger.debug("Stopping SumoLogicAppender {}", getName());
+      setStopping();
+      final boolean stopped = super.stop(timeout, timeUnit, false);
+      try {
+          flusher.stop();
+          logger.debug("flusher has been stopped");
+          flusher = null;
 
-            flusher.stop();
-            flusher = null;
-        } catch (Exception e) {
-            logger.error("Unable to close appender", e);
-        }
-    }
+          sender.close();
+          sender = null;
 
-    // Private bits.
+      } catch (Exception e) {
+        logger.error("Unable to close appender", e);
+      }
+      setStopped();
+      logger.debug("SumoLogicAppender {} has been stopped", getName());
+      return stopped;
+  }
 
-    private boolean checkEntryConditions() {
-        return sender != null && sender.isInitialized();
-    }
+  // Private bits.
+
+  private boolean checkEntryConditions() {
+    return sender != null && sender.isInitialized();
+  }
 
 }
