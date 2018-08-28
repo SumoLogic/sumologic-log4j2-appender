@@ -27,6 +27,7 @@ package com.sumologic.log4j.http;
 
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -107,6 +108,7 @@ public class SumoHttpSender {
         RequestConfig requestConfig = RequestConfig.custom()
                 .setSocketTimeout(socketTimeout)
                 .setConnectTimeout(connectionTimeout)
+                .setCookieSpec(CookieSpecs.STANDARD)
                 .build();
 
         HttpClientBuilder builder = HttpClients.custom()
