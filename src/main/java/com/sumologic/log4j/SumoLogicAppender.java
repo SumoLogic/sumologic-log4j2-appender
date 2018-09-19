@@ -26,12 +26,12 @@
 
 package com.sumologic.log4j;
 
-import com.sumologic.log4j.aggregation.SumoBufferFlusher;
-import com.sumologic.log4j.http.ProxySettings;
-import com.sumologic.log4j.http.SumoHttpSender;
-import com.sumologic.log4j.queue.BufferWithEviction;
-import com.sumologic.log4j.queue.BufferWithFifoEviction;
-import com.sumologic.log4j.queue.CostBoundedConcurrentQueue;
+import com.sumologic.http.aggregation.SumoBufferFlusher;
+import com.sumologic.http.sender.ProxySettings;
+import com.sumologic.http.sender.SumoHttpSender;
+import com.sumologic.http.queue.BufferWithEviction;
+import com.sumologic.http.queue.BufferWithFifoEviction;
+import com.sumologic.http.queue.CostBoundedConcurrentQueue;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -69,6 +69,7 @@ public class SumoLogicAppender extends AbstractAppender {
     private SumoBufferFlusher flusher;
     volatile private BufferWithEviction<String> queue;
     private static final Logger logger = StatusLogger.getLogger();
+    private static final String CLIENT_NAME = "log4j2-appender";
 
     protected SumoLogicAppender(String name, Filter filter,
                                 Layout<? extends Serializable> layout, final boolean ignoreExceptions,
@@ -99,6 +100,7 @@ public class SumoLogicAppender extends AbstractAppender {
         sender.setSourceCategory(sourceCategory);
         sender.setSourceHost(sourceHost);
         sender.setProxySettings(proxySettings);
+        sender.setClientHeaderValue(CLIENT_NAME);
         sender.init();
 
         // Initialize flusher
@@ -163,7 +165,7 @@ public class SumoLogicAppender extends AbstractAppender {
         }
 
         String message = new String(getLayout().toByteArray(event));
-        logger.debug("Sending messge to Sumo: " + message);
+        logger.debug("Sending message to Sumo: " + message);
 
         try {
             queue.add(message);

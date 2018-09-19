@@ -25,19 +25,12 @@
  */
 package com.sumologic.log4j.server;
 
-import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-
-/**
- * Author: Jose Muniz (jose@sumologic.com)
- * Date: 4/4/13
- * Time: 3:58 AM
- */
 public class MockHttpServer {
 
     private int port;
