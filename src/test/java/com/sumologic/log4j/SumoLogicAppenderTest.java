@@ -73,7 +73,7 @@ public class SumoLogicAppenderTest {
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Name").equals("mySource"));
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Category").equals("myCategory"));
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Host").equals("myHost"));
-            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Client").equals("log4j2-appender"));
+            assertEquals("log4j2-appender", request.getHeaders().getFirst("X-Sumo-Client"));
         }
         // Check body
         StringBuffer actual = new StringBuffer();
@@ -102,7 +102,7 @@ public class SumoLogicAppenderTest {
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Name") == null);
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Category") == null);
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Host") == null);
-            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Client").equals("log4j2-appender"));
+            assertEquals("log4j2-appender", request.getHeaders().getFirst("X-Sumo-Client"));
         }
     }
 }
