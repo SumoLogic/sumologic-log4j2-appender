@@ -1,12 +1,8 @@
 # sumologic-log4j2-appender
 
-A Log4J 2 appender that sends straight to Sumo Logic.
+A Log4j2 appender that sends straight to Sumo Logic.
 
-Note: For the original Log4j appender, please see https://github.com/SumoLogic/sumo-log4j-appender
-
-| TLS Deprecation Notice |
-| --- |
-| In keeping with industry standard security best practices, as of May 31, 2018, the Sumo Logic service will only support TLS version 1.2 going forward. Verify that all connections to Sumo Logic endpoints are made from software that supports TLS 1.2. |
+For the original Log4j appender, please see https://github.com/SumoLogic/sumo-log4j-appender
 
 ## Installation
 
@@ -16,7 +12,7 @@ The library can be added to your project using Maven Central by adding the follo
 <dependency>
     <groupId>com.sumologic.plugins.log4j</groupId>
     <artifactId>sumologic-log4j2-appender</artifactId>
-    <version>1.5</version>
+    <version>1.7</version>
 </dependency>
 ```
 
@@ -97,6 +93,10 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
     </Loggers>
 </Configuration>
 ```
+
+### TLS Support
+
+In keeping with industry standard security best practices, as of May 31, 2018, the Sumo Logic service will only support TLS version 1.2 going forward. Verify that all connections to Sumo Logic endpoints are made from software that supports TLS 1.2.
 
 ## Development
 
