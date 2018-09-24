@@ -36,9 +36,6 @@ import org.apache.logging.log4j.LogManager;
 
 import static org.junit.Assert.*;
 
-/**
- * @author: Jose Muniz (jose@sumologic.com)
- */
 public class SumoLogicAppenderTest {
 
     private static final int PORT = 10010;
@@ -55,28 +52,40 @@ public class SumoLogicAppenderTest {
 
     @After
     public void tearDown() throws Exception {
-        if (server != null)
+        if (server != null) {
             server.stop();
+        }
     }
 
     @Test
     public void testMessagesWithMetadata() throws Exception {
         // See ./resources/log4j2.xml for definition
         Logger loggerInTest = LogManager.getLogger("TestAppender1");
-        int numMessages = 5;
-        for (int i = 0; i < numMessages; i ++) {
-            loggerInTest.info("info " + i);
-            Thread.sleep(150);
+        StringBuffer expected = new StringBuffer();
+        for (int i = 0; i < 100; i ++) {
+            String message = "info" + i;
+            loggerInTest.info(message);
+            expected.append("[main] INFO  TestAppender1 - " + message + "\n");
         }
-
-        assertEquals(numMessages, handler.getExchanges().size());
+        Thread.sleep(150);
+        // Check headers
         for(MaterializedHttpRequest request: handler.getExchanges()) {
-            assertEquals(true, request.getBody().contains("info"));
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Name").equals("mySource"));
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Category").equals("myCategory"));
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Host").equals("myHost"));
-            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Client").equals("log4j2-appender"));
+            assertEquals("log4j2-appender", request.getHeaders().getFirst("X-Sumo-Client"));
         }
+        // Check body
+        StringBuffer actual = new StringBuffer();
+        for(MaterializedHttpRequest request: handler.getExchanges()) {
+            for (String line : request.getBody().split("\n")) {
+                // Strip timestamp
+                int mainStart = line.indexOf("[main]");
+                String trimmed = line.substring(mainStart);
+                actual.append(trimmed + "\n");
+            }
+        }
+        assertEquals(expected.toString(), actual.toString());
     }
 
     @Test
@@ -88,14 +97,12 @@ public class SumoLogicAppenderTest {
             loggerInTest.info("info " + i);
             Thread.sleep(150);
         }
-
         assertEquals(numMessages, handler.getExchanges().size());
         for(MaterializedHttpRequest request: handler.getExchanges()) {
-            assertEquals(true, request.getBody().contains("info"));
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Name") == null);
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Category") == null);
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Host") == null);
-            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Client").equals("log4j2-appender"));
+            assertEquals("log4j2-appender", request.getHeaders().getFirst("X-Sumo-Client"));
         }
     }
 }

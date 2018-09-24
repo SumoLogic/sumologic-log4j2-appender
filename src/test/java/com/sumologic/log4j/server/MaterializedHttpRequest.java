@@ -27,11 +27,6 @@ package com.sumologic.log4j.server;
 
 import com.sun.net.httpserver.Headers;
 
-/**
- * Author: Jose Muniz (jose@sumologic.com)
- * Date: 4/4/13
- * Time: 3:10 PM
- */
 public class MaterializedHttpRequest {
     private String method;
     private String body;
