@@ -50,6 +50,11 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
 </Configuration>
 ```
 
+**Note:** We recommending starting your `PatternLayout` pattern with a date and time such as `%d{yyyy-MM-dd HH:mm:ss,SSS Z}` for two reasons:
+
+1. Having a consistent prefix that starts every message is necessary for multiline boundary detection to learn the message prefix needed to group mutiline messages, such as stack traces.
+2. Sumo only supports [certain time formats](https://help.sumologic.com/03Send-Data/Sources/04Reference-Information-for-Sources/Timestamps%2C-Time-Zones%2C-Time-Ranges%2C-and-Date-Formats), and accidentally using an invalid time format could cause [message time discrepancies](https://help.sumologic.com/03Send-Data/Collector-FAQs/Troubleshooting-time-discrepancies).
+
 ### Parameters
 | Parameter             | Required? | Default Value | Description                                                                                                                                |
 |-----------------------|----------|---------------|--------------------------------------------------------------------------------------------------------------------------------------------|
