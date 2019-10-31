@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 
 public class SumoLogicAppenderTest {
 
-    private static final int PORT = 10010;
+    private static final int PORT = 26932;
 
     private MockHttpServer server;
     private AggregatingHttpHandler handler;

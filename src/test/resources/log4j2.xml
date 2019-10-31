@@ -6,7 +6,7 @@
         </Console>
         <SumoLogicAppender
                 name="TestSumoAppender1"
-                url="http://localhost:10010"
+                url="http://localhost:26932"
                 sourceName="mySource"
                 sourceHost="myHost"
                 sourceCategory="myCategory"
@@ -17,7 +17,7 @@
         </SumoLogicAppender>
         <SumoLogicAppender
                 name="TestSumoAppender2"
-                url="http://localhost:10010"
+                url="http://localhost:26932"
                 messagesPerRequest="10000"
                 maxFlushInterval="100"
                 flushingAccuracy="10">
