@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 
 public class SumoLogicAppenderTest {
 
-    private static final int PORT = 10010;
+    private static final int PORT = 26932;
 
     private MockHttpServer server;
     private AggregatingHttpHandler handler;
@@ -67,7 +67,7 @@ public class SumoLogicAppenderTest {
             loggerInTest.info(message);
             expected.append("[main] INFO  TestAppender1 - " + message + "\n");
         }
-        Thread.sleep(150);
+        Thread.sleep(300);
         // Check headers
         for(MaterializedHttpRequest request: handler.getExchanges()) {
             assertEquals(true, request.getHeaders().getFirst("X-Sumo-Name").equals("mySource"));
@@ -95,7 +95,7 @@ public class SumoLogicAppenderTest {
         int numMessages = 5;
         for (int i = 0; i < numMessages; i ++) {
             loggerInTest.info("info " + i);
-            Thread.sleep(150);
+            Thread.sleep(300);
         }
         assertEquals(numMessages, handler.getExchanges().size());
         for(MaterializedHttpRequest request: handler.getExchanges()) {
