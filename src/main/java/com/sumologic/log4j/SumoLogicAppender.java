@@ -64,6 +64,7 @@ public class SumoLogicAppender extends AbstractAppender {
     private static final long DEFAULT_FLUSHING_ACCURACY = 250;          // How often the flushed thread looks into the message queue (ms)
     private static final long DEFAULT_MAX_QUEUE_SIZE_BYTES = 1000000;   // Maximum message queue size (bytes)
     private static final boolean FLUSH_ALL_MESSAGES_BEFORE_STOPPING = false;   // Flush Before Stoping irrespective of  flushingAccuracy
+    private static final String DEFAULT_RETRY_HTTP_CODE_REGEX = "^5.*"; // Retry for any 5xx HTTP response code
 
     private SumoHttpSender sender;
     private SumoBufferFlusher flusher;
@@ -77,7 +78,8 @@ public class SumoLogicAppender extends AbstractAppender {
                                 Integer retryInterval, Integer connectionTimeout, Integer socketTimeout,
                                 Long messagesPerRequest, Long maxFlushInterval, String sourceName,
                                 String sourceCategory, String sourceHost,
-                                Long flushingAccuracy, Long maxQueueSizeBytes, Boolean flushAllBeforeStopping) {
+                                Long flushingAccuracy, Long maxQueueSizeBytes, Boolean flushAllBeforeStopping,
+                                String retryableHttpCodeRegex) {
         super(name, filter, layout, ignoreExceptions);
 
         // Initialize queue
@@ -92,15 +94,16 @@ public class SumoLogicAppender extends AbstractAppender {
 
         // Initialize sender
         sender = new SumoHttpSender();
-        sender.setRetryInterval(retryInterval);
-        sender.setConnectionTimeout(connectionTimeout);
-        sender.setSocketTimeout(socketTimeout);
+        sender.setRetryIntervalMs(retryInterval);
+        sender.setConnectionTimeoutMs(connectionTimeout);
+        sender.setSocketTimeoutMs(socketTimeout);
         sender.setUrl(url);
         sender.setSourceName(sourceName);
         sender.setSourceCategory(sourceCategory);
         sender.setSourceHost(sourceHost);
         sender.setProxySettings(proxySettings);
         sender.setClientHeaderValue(CLIENT_NAME);
+        sender.setRetryableHttpCodeRegex(retryableHttpCodeRegex);
         sender.init();
 
         // Initialize flusher
@@ -135,7 +138,8 @@ public class SumoLogicAppender extends AbstractAppender {
             @PluginAttribute(value = "sourceHost") String sourceHost,
             @PluginAttribute(value = "flushingAccuracy", defaultLong = DEFAULT_FLUSHING_ACCURACY) Long flushingAccuracy,
             @PluginAttribute(value = "maxQueueSizeBytes", defaultLong = DEFAULT_MAX_QUEUE_SIZE_BYTES) Long maxQueueSizeBytes,
-            @PluginAttribute(value = "flushAllBeforeStopping", defaultBoolean = FLUSH_ALL_MESSAGES_BEFORE_STOPPING) Boolean flushAllBeforeStopping) {
+            @PluginAttribute(value = "flushAllBeforeStopping", defaultBoolean = FLUSH_ALL_MESSAGES_BEFORE_STOPPING) Boolean flushAllBeforeStopping,
+            @PluginAttribute(value = "retryableHttpCodeRegex", defaultString = DEFAULT_RETRY_HTTP_CODE_REGEX) String retryableHttpCodeRegex) {
 
         if (name == null) {
             logger.error("No name provided for SumoLogicAppender");
@@ -155,7 +159,7 @@ public class SumoLogicAppender extends AbstractAppender {
 
         return new SumoLogicAppender(name, filter, layout, true, url, proxySettings, retryInterval, connectionTimeout,
                 socketTimeout, messagesPerRequest, maxFlushInterval, sourceName, sourceCategory,
-                sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping);
+                sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping, retryableHttpCodeRegex);
     }
 
     public void append(LogEvent event) {
