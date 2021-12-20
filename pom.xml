@@ -129,7 +129,7 @@
         <dependency>
             <groupId>com.sumologic.plugins.http</groupId>
             <artifactId>sumologic-http-core</artifactId>
-            <version>1.7</version>
+            <version>1.8</version>
         </dependency>
     </dependencies>
 
