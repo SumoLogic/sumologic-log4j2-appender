@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sumologic.plugins.log4j</groupId>
     <artifactId>sumologic-log4j2-appender</artifactId>
-    <version>1.11</version>
+    <version>1.12</version>
     <packaging>jar</packaging>
     <name>Sumo Logic Log4J 2 Appender</name>
     <description>The Log4J 2 Appender for the Sumo Logic log management service</description>
