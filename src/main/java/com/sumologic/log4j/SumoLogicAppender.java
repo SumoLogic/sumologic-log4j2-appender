@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
@@ -59,7 +60,7 @@ public class SumoLogicAppender extends AbstractAppender {
     private static final int DEFAULT_CONNECTION_TIMEOUT = 1000;         // Connection timeout (ms)
     private static final int DEFAULT_SOCKET_TIMEOUT = 60000;            // Socket timeout (ms)
     private static final int DEFAULT_RETRY_INTERVAL = 10000;            // If a request fails, how often do we retry.
-    private static final long DEFAULT_MESSAGES_PER_REQUEST = 100;       // How many messages need to be in the queue before we flush
+    private static final int DEFAULT_MESSAGES_PER_REQUEST = 100;        // How many messages need to be in the queue before we flush
     private static final long DEFAULT_MAX_FLUSH_INTERVAL = 10000;       // Maximum interval between flushes (ms)
     private static final long DEFAULT_FLUSHING_ACCURACY = 250;          // How often the flushed thread looks into the message queue (ms)
     private static final long DEFAULT_MAX_QUEUE_SIZE_BYTES = 1000000;   // Maximum message queue size (bytes)
@@ -76,11 +77,11 @@ public class SumoLogicAppender extends AbstractAppender {
                                 Layout<? extends Serializable> layout, final boolean ignoreExceptions,
                                 String url, ProxySettings proxySettings,
                                 Integer retryInterval, Integer connectionTimeout, Integer socketTimeout,
-                                Long messagesPerRequest, Long maxFlushInterval, String sourceName,
+                                Integer messagesPerRequest, Long maxFlushInterval, String sourceName,
                                 String sourceCategory, String sourceHost,
                                 Long flushingAccuracy, Long maxQueueSizeBytes, Boolean flushAllBeforeStopping,
                                 String retryableHttpCodeRegex) {
-        super(name, filter, layout, ignoreExceptions);
+        super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
 
         // Initialize queue
         queue = new BufferWithFifoEviction<String>(maxQueueSizeBytes, new CostBoundedConcurrentQueue.CostAssigner<String>() {
@@ -131,7 +132,7 @@ public class SumoLogicAppender extends AbstractAppender {
             @PluginAttribute(value = "retryInterval", defaultInt = DEFAULT_RETRY_INTERVAL) Integer retryInterval,
             @PluginAttribute(value = "connectionTimeout", defaultInt = DEFAULT_CONNECTION_TIMEOUT) Integer connectionTimeout,
             @PluginAttribute(value = "socketTimeout", defaultInt = DEFAULT_SOCKET_TIMEOUT) Integer socketTimeout,
-            @PluginAttribute(value = "messagesPerRequest", defaultLong = DEFAULT_MESSAGES_PER_REQUEST) Long messagesPerRequest,
+            @PluginAttribute(value = "messagesPerRequest", defaultInt = DEFAULT_MESSAGES_PER_REQUEST) Integer messagesPerRequest,
             @PluginAttribute(value = "maxFlushInterval", defaultLong = DEFAULT_MAX_FLUSH_INTERVAL) Long maxFlushInterval,
             @PluginAttribute(value = "sourceName") String sourceName,
             @PluginAttribute(value = "sourceCategory") String sourceCategory,
