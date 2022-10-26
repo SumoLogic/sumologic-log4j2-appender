@@ -105,4 +105,10 @@ public class SumoLogicAppenderTest {
             assertEquals("log4j2-appender", request.getHeaders().getFirst("X-Sumo-Client"));
         }
     }
+
+    @Test
+    public void setupAppenderWithoutRequiredFields() {
+        SumoLogicAppender appender = SumoLogicAppender.newBuilder().build();
+        assertNull(appender);
+    }
 }
