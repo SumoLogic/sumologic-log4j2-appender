@@ -115,6 +115,9 @@ public class SumoLogicAppender extends AbstractAppender {
         flusher.start();
     }
 
+    /**
+     * Deprecated method. Please use the builder API by calling {@link #newBuilder() newBuilder()} function.
+     */
     @PluginFactory
     @Deprecated
     public static SumoLogicAppender createAppender(
