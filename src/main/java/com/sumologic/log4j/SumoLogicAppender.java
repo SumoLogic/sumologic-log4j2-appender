@@ -38,10 +38,8 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.*;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -117,7 +115,11 @@ public class SumoLogicAppender extends AbstractAppender {
         flusher.start();
     }
 
+    /**
+     * Deprecated method. Please use the builder API by calling {@link #newBuilder() newBuilder()} function.
+     */
     @PluginFactory
+    @Deprecated
     public static SumoLogicAppender createAppender(
             @PluginAttribute("name") String name,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
@@ -161,6 +163,187 @@ public class SumoLogicAppender extends AbstractAppender {
         return new SumoLogicAppender(name, filter, layout, true, url, proxySettings, retryInterval, connectionTimeout,
                 socketTimeout, messagesPerRequest, maxFlushInterval, sourceName, sourceCategory,
                 sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping, retryableHttpCodeRegex);
+    }
+
+    @PluginBuilderFactory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<SumoLogicAppender> {
+        private final int DEFAULT_CONNECTION_TIMEOUT = 1000;
+        private final int DEFAULT_SOCKET_TIMEOUT = 60000;
+        private final int DEFAULT_RETRY_INTERVAL = 10000;
+        private final int DEFAULT_MESSAGES_PER_REQUEST = 100;
+        private final long DEFAULT_MAX_FLUSH_INTERVAL = 10000L;
+        private final long DEFAULT_FLUSHING_ACCURACY = 250L;
+        private final long DEFAULT_MAX_QUEUE_SIZE_BYTES = 1000000L;
+        private final String DEFAULT_RETRY_HTTP_CODE_REGEX = "^5.*";
+        private final boolean FLUSH_ALL_MESSAGES_BEFORE_STOPPING = false;
+
+        @PluginBuilderAttribute
+        @Required(message = "Name is required for SumoLogicAppender")
+        private String name;
+        @PluginElement("layout")
+        private Layout<? extends Serializable> layout;
+        @PluginElement("Filter")
+        private Filter filter;
+        @PluginBuilderAttribute
+        @Required(message = "Url is required for SumoLogicAppender")
+        private String url;
+        @PluginBuilderAttribute
+        private String proxyAuth;
+        @PluginBuilderAttribute
+        private String proxyHost;
+        @PluginBuilderAttribute
+        private Integer proxyPort = 0;
+        @PluginBuilderAttribute
+        private String proxyUser;
+        @PluginBuilderAttribute
+        private String proxyPassword;
+        @PluginBuilderAttribute
+        private String proxyDomain;
+        @PluginBuilderAttribute
+        private int retryInterval = DEFAULT_RETRY_INTERVAL;
+        @PluginBuilderAttribute
+        private int connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
+        @PluginBuilderAttribute
+        private int socketTimeout = DEFAULT_SOCKET_TIMEOUT;
+        @PluginBuilderAttribute
+        private int messagesPerRequest = DEFAULT_MESSAGES_PER_REQUEST;
+        @PluginBuilderAttribute
+        private long maxFlushInterval = DEFAULT_MAX_FLUSH_INTERVAL;
+        @PluginBuilderAttribute
+        private String sourceName;
+        @PluginBuilderAttribute
+        private String sourceCategory;
+        @PluginBuilderAttribute
+        private String sourceHost;
+        @PluginBuilderAttribute
+        private long flushingAccuracy = DEFAULT_FLUSHING_ACCURACY;
+        @PluginBuilderAttribute
+        private long maxQueueSizeBytes = DEFAULT_MAX_QUEUE_SIZE_BYTES;
+        @PluginBuilderAttribute
+        private boolean flushAllBeforeStopping = FLUSH_ALL_MESSAGES_BEFORE_STOPPING;
+        @PluginBuilderAttribute
+        private String retryableHttpCodeRegex = DEFAULT_RETRY_HTTP_CODE_REGEX;
+
+        public Builder setName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setLayout(final Layout<? extends Serializable> layout) {
+            this.layout = layout;
+            return this;
+        }
+
+        public Builder setFilter(final Filter filter) {
+            this.filter = filter;
+            return this;
+        }
+
+        public Builder setUrl(final String url) {
+            this.url = url;
+            return this;
+        }
+
+        public Builder setProxyAuth(final String proxyAuth) {
+            this.proxyAuth = proxyAuth;
+            return this;
+        }
+
+        public Builder setProxyHost(final String proxyHost) {
+            this.proxyHost = proxyHost;
+            return this;
+        }
+
+        public Builder setProxyPort(final Integer proxyPort) {
+            this.proxyPort = proxyPort;
+            return this;
+        }
+
+        public Builder setProxyUser(final String proxyUser) {
+            this.proxyUser = proxyUser;
+            return this;
+        }
+
+        public Builder setProxyPassword(final String proxyPassword) {
+            this.proxyPassword = proxyPassword;
+            return this;
+        }
+
+        public Builder setProxyDomain(final String proxyDomain) {
+            this.proxyDomain = proxyDomain;
+            return this;
+        }
+
+        public Builder setRetryInterval(final int retryInterval) {
+            this.retryInterval = retryInterval;
+            return this;
+        }
+
+        public Builder setConnectionTimeout(final int connectionTimeout) {
+            this.connectionTimeout = connectionTimeout;
+            return this;
+        }
+
+        public Builder setSocketTimeout(final int socketTimeout) {
+            this.socketTimeout = socketTimeout;
+            return this;
+        }
+
+        public Builder setMessagesPerRequest(final int messagesPerRequest) {
+            this.messagesPerRequest = messagesPerRequest;
+            return this;
+        }
+
+        public Builder setMaxFlushInterval(final long maxFlushInterval) {
+            this.maxFlushInterval = maxFlushInterval;
+            return this;
+        }
+
+        public Builder setSourceName(final String sourceName) {
+            this.sourceName = sourceName;
+            return this;
+        }
+
+        public Builder setSourceCategory(final String sourceCategory) {
+            this.sourceCategory = sourceCategory;
+            return this;
+        }
+
+        public Builder setSourceHost(final String sourceHost) {
+            this.sourceHost = sourceHost;
+            return this;
+        }
+
+        public Builder setFlushingAccuracy(final long flushingAccuracy) {
+            this.flushingAccuracy = flushingAccuracy;
+            return this;
+        }
+
+        public Builder setMaxQueueSizeBytes(final long maxQueueSizeBytes) {
+            this.maxQueueSizeBytes = maxQueueSizeBytes;
+            return this;
+        }
+
+        public Builder setFlushAllBeforeStopping(final boolean flushAllBeforeStopping) {
+            this.flushAllBeforeStopping = flushAllBeforeStopping;
+            return this;
+        }
+
+        public Builder setRetryableHttpCodeRegex(final String retryableHttpCodeRegex) {
+            this.retryableHttpCodeRegex = retryableHttpCodeRegex;
+            return this;
+        }
+
+        @Override
+        public SumoLogicAppender build() {
+            return SumoLogicAppender.createAppender(name, layout, filter, url, proxyAuth, proxyHost, proxyPort, proxyUser,
+                    proxyPassword, proxyDomain, retryInterval, connectionTimeout, socketTimeout, messagesPerRequest, maxFlushInterval,
+                    sourceName, sourceCategory, sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping, retryableHttpCodeRegex);
+        }
     }
 
     public void append(LogEvent event) {
