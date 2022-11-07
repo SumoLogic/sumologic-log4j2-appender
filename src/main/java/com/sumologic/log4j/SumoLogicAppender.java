@@ -58,6 +58,7 @@ public class SumoLogicAppender extends AbstractAppender {
     private static final int DEFAULT_CONNECTION_TIMEOUT = 1000;         // Connection timeout (ms)
     private static final int DEFAULT_SOCKET_TIMEOUT = 60000;            // Socket timeout (ms)
     private static final int DEFAULT_RETRY_INTERVAL = 10000;            // If a request fails, how often do we retry.
+    private static final int DEFAULT_MAX_NUMBER_OF_RETRIES = -1;        // Maximum number of retries for a single request, infinity if negative.
     private static final int DEFAULT_MESSAGES_PER_REQUEST = 100;        // How many messages need to be in the queue before we flush
     private static final long DEFAULT_MAX_FLUSH_INTERVAL = 10000;       // Maximum interval between flushes (ms)
     private static final long DEFAULT_FLUSHING_ACCURACY = 250;          // How often the flushed thread looks into the message queue (ms)
@@ -74,7 +75,7 @@ public class SumoLogicAppender extends AbstractAppender {
     protected SumoLogicAppender(String name, Filter filter,
                                 Layout<? extends Serializable> layout, final boolean ignoreExceptions,
                                 String url, ProxySettings proxySettings,
-                                Integer retryInterval, Integer connectionTimeout, Integer socketTimeout,
+                                Integer retryInterval, Integer maxNumberOfRetries, Integer connectionTimeout, Integer socketTimeout,
                                 Integer messagesPerRequest, Long maxFlushInterval, String sourceName,
                                 String sourceCategory, String sourceHost,
                                 Long flushingAccuracy, Long maxQueueSizeBytes, Boolean flushAllBeforeStopping,
@@ -94,6 +95,7 @@ public class SumoLogicAppender extends AbstractAppender {
         // Initialize sender
         sender = new SumoHttpSender();
         sender.setRetryIntervalMs(retryInterval);
+        sender.setMaxNumberOfRetries(maxNumberOfRetries);
         sender.setConnectionTimeoutMs(connectionTimeout);
         sender.setSocketTimeoutMs(socketTimeout);
         sender.setUrl(url);
@@ -132,6 +134,7 @@ public class SumoLogicAppender extends AbstractAppender {
             @PluginAttribute("proxyPassword") String proxyPassword,
             @PluginAttribute("proxyDomain") String proxyDomain,
             @PluginAttribute(value = "retryInterval", defaultInt = DEFAULT_RETRY_INTERVAL) Integer retryInterval,
+            @PluginAttribute(value = "maxNumberOfRetries", defaultInt = DEFAULT_MAX_NUMBER_OF_RETRIES) Integer maxNumberOfRetries,
             @PluginAttribute(value = "connectionTimeout", defaultInt = DEFAULT_CONNECTION_TIMEOUT) Integer connectionTimeout,
             @PluginAttribute(value = "socketTimeout", defaultInt = DEFAULT_SOCKET_TIMEOUT) Integer socketTimeout,
             @PluginAttribute(value = "messagesPerRequest", defaultInt = DEFAULT_MESSAGES_PER_REQUEST) Integer messagesPerRequest,
@@ -160,7 +163,7 @@ public class SumoLogicAppender extends AbstractAppender {
 
         ProxySettings proxySettings = new ProxySettings(proxyHost, proxyPort, proxyAuth, proxyUser, proxyPassword, proxyDomain);
 
-        return new SumoLogicAppender(name, filter, layout, true, url, proxySettings, retryInterval, connectionTimeout,
+        return new SumoLogicAppender(name, filter, layout, true, url, proxySettings, retryInterval, maxNumberOfRetries, connectionTimeout,
                 socketTimeout, messagesPerRequest, maxFlushInterval, sourceName, sourceCategory,
                 sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping, retryableHttpCodeRegex);
     }
@@ -171,16 +174,6 @@ public class SumoLogicAppender extends AbstractAppender {
     }
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<SumoLogicAppender> {
-        private final int DEFAULT_CONNECTION_TIMEOUT = 1000;
-        private final int DEFAULT_SOCKET_TIMEOUT = 60000;
-        private final int DEFAULT_RETRY_INTERVAL = 10000;
-        private final int DEFAULT_MESSAGES_PER_REQUEST = 100;
-        private final long DEFAULT_MAX_FLUSH_INTERVAL = 10000L;
-        private final long DEFAULT_FLUSHING_ACCURACY = 250L;
-        private final long DEFAULT_MAX_QUEUE_SIZE_BYTES = 1000000L;
-        private final String DEFAULT_RETRY_HTTP_CODE_REGEX = "^5.*";
-        private final boolean FLUSH_ALL_MESSAGES_BEFORE_STOPPING = false;
-
         @PluginBuilderAttribute
         @Required(message = "Name is required for SumoLogicAppender")
         private String name;
@@ -205,6 +198,8 @@ public class SumoLogicAppender extends AbstractAppender {
         private String proxyDomain;
         @PluginBuilderAttribute
         private int retryInterval = DEFAULT_RETRY_INTERVAL;
+        @PluginBuilderAttribute
+        private int maxNumberOfRetries = DEFAULT_MAX_NUMBER_OF_RETRIES;
         @PluginBuilderAttribute
         private int connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
         @PluginBuilderAttribute
@@ -283,6 +278,11 @@ public class SumoLogicAppender extends AbstractAppender {
             return this;
         }
 
+        public Builder setMaxNumberOfRetries(final int maxNumberOfRetries) {
+            this.maxNumberOfRetries = maxNumberOfRetries;
+            return this;
+        }
+
         public Builder setConnectionTimeout(final int connectionTimeout) {
             this.connectionTimeout = connectionTimeout;
             return this;
@@ -341,7 +341,7 @@ public class SumoLogicAppender extends AbstractAppender {
         @Override
         public SumoLogicAppender build() {
             return SumoLogicAppender.createAppender(name, layout, filter, url, proxyAuth, proxyHost, proxyPort, proxyUser,
-                    proxyPassword, proxyDomain, retryInterval, connectionTimeout, socketTimeout, messagesPerRequest, maxFlushInterval,
+                    proxyPassword, proxyDomain, retryInterval, maxNumberOfRetries, connectionTimeout, socketTimeout, messagesPerRequest, maxFlushInterval,
                     sourceName, sourceCategory, sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping, retryableHttpCodeRegex);
         }
     }

@@ -68,6 +68,7 @@ Be sure to replace [collector-url] with the URL after creating an HTTP Hosted Co
 | proxyPassword         | No       |               | Proxy host password for basic and NTLM authentication. For no authentication proxy, do not specify.                                        |
 | proxyDomain           | No       |               | Proxy host domain name for NTLM authentication only                                                                                        |
 | retryInterval         | No       | 10000         | Retry interval (in ms) if a request fails                                                                                                  |
+| maxNumberOfRetries    | No       | -1            | Maximum number of retries before a message is dropped. Negative values represent no limit on retries.                                      |
 | connectionTimeout     | No       | 1000          | Timeout (in ms) for connection                                                                                                             |
 | socketTimeout         | No       | 60000         | Timeout (in ms) for a socket                                                                                                               |
 | messagesPerRequest    | No       | 100           | Number of messages needed to be in the queue before flushing                                                                               |
