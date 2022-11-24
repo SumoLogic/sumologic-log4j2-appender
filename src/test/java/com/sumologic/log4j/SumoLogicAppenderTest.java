@@ -28,17 +28,23 @@ package com.sumologic.log4j;
 import com.sumologic.log4j.server.AggregatingHttpHandler;
 import com.sumologic.log4j.server.MaterializedHttpRequest;
 import com.sumologic.log4j.server.MockHttpServer;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.Assert.*;
 
 public class SumoLogicAppenderTest {
 
     private static final int PORT = 26932;
+
+	private static final String testLocalhostUrl = "http://localhost:8080";
+	private static final String testAppenderName = "TestAppender";
 
     private MockHttpServer server;
     private AggregatingHttpHandler handler;
@@ -51,7 +57,7 @@ public class SumoLogicAppenderTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (server != null) {
             server.stop();
         }
@@ -61,28 +67,28 @@ public class SumoLogicAppenderTest {
     public void testMessagesWithMetadata() throws Exception {
         // See ./resources/log4j2.xml for definition
         Logger loggerInTest = LogManager.getLogger("TestAppender1");
-        StringBuffer expected = new StringBuffer();
+        StringBuilder expected = new StringBuilder();
         for (int i = 0; i < 100; i ++) {
             String message = "info" + i;
             loggerInTest.info(message);
-            expected.append("[main] INFO  TestAppender1 - " + message + "\n");
+            expected.append("[main] INFO  TestAppender1 - ").append(message).append(System.lineSeparator());
         }
         Thread.sleep(300);
         // Check headers
         for(MaterializedHttpRequest request: handler.getExchanges()) {
-            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Name").equals("mySource"));
-            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Category").equals("myCategory"));
-            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Host").equals("myHost"));
+			assertEquals("mySource", request.getHeaders().getFirst("X-Sumo-Name"));
+			assertEquals("myCategory", request.getHeaders().getFirst("X-Sumo-Category"));
+			assertEquals("myHost", request.getHeaders().getFirst("X-Sumo-Host"));
             assertEquals("log4j2-appender", request.getHeaders().getFirst("X-Sumo-Client"));
         }
         // Check body
-        StringBuffer actual = new StringBuffer();
+        StringBuilder actual = new StringBuilder();
         for(MaterializedHttpRequest request: handler.getExchanges()) {
             for (String line : request.getBody().split(System.lineSeparator())) {
                 // Strip timestamp
                 int mainStart = line.indexOf("[main]");
                 String trimmed = line.substring(mainStart);
-                actual.append(trimmed + "\n");
+                actual.append(trimmed).append(System.lineSeparator());
             }
         }
         assertEquals(expected.toString(), actual.toString());
@@ -99,9 +105,9 @@ public class SumoLogicAppenderTest {
         }
         assertEquals(numMessages, handler.getExchanges().size());
         for(MaterializedHttpRequest request: handler.getExchanges()) {
-            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Name") == null);
-            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Category") == null);
-            assertEquals(true, request.getHeaders().getFirst("X-Sumo-Host") == null);
+			assertNull(request.getHeaders().getFirst("X-Sumo-Name"));
+			assertNull(request.getHeaders().getFirst("X-Sumo-Category"));
+			assertNull(request.getHeaders().getFirst("X-Sumo-Host"));
             assertEquals("log4j2-appender", request.getHeaders().getFirst("X-Sumo-Client"));
         }
     }
@@ -111,4 +117,54 @@ public class SumoLogicAppenderTest {
         SumoLogicAppender appender = SumoLogicAppender.newBuilder().build();
         assertNull(appender);
     }
+
+	@Test
+	public void buildAppenderWithoutRequiredFieldUrl() {
+		SumoLogicAppender appender = SumoLogicAppender.newBuilder().setName(testAppenderName).build();
+		assertNull(appender);
+	}
+
+	@Test
+	public void buildAppenderWithoutRequiredFieldName() {
+		SumoLogicAppender appender = SumoLogicAppender.newBuilder().setUrl(testLocalhostUrl).build();
+		assertNull(appender);
+	}
+
+	@Test
+	public void buildAppenderWithRequiredFieldsOnlyAndStop(){
+		SumoLogicAppender appender = SumoLogicAppender.newBuilder()
+				.setName(testAppenderName)
+				.setUrl(testLocalhostUrl)
+				.build();
+		assertNotNull(appender);
+		assertTrue(appender.stop(1L, TimeUnit.SECONDS));
+	}
+
+	@Test
+	public void buildAppenderWithRequiredFieldsAndFieldsWithUserDefinedDefaultOrNullAndStop(){
+		SumoLogicAppender appender = SumoLogicAppender.newBuilder()
+				.setName(testAppenderName)
+				.setUrl(testLocalhostUrl)
+				.setRetryInterval(10000)
+				.setMaxNumberOfRetries(-1)
+				.setConnectionTimeout(1000)
+				.setSocketTimeout(60000)
+				.setMessagesPerRequest(1)
+				.setMaxFlushInterval(10000)
+				.setFlushingAccuracy(250)
+				.setMaxQueueSizeBytes(1000000)
+				.setFlushAllBeforeStopping(false)
+				.setRetryableHttpCodeRegex("^5.*")
+				.setLayout(PatternLayout.createDefaultLayout())
+				.setSourceName("testSource")
+				.setSourceCategory("testCategory")
+				.setSourceHost("testHost")
+				.setFilter(null)
+				.setLayout(null)
+				.build();
+		assertNotNull(appender);
+		assertEquals(appender.getName(), testAppenderName);
+		assertNull(appender.getFilter());
+		assertTrue(appender.stop(1L, TimeUnit.SECONDS));
+	}
 }
