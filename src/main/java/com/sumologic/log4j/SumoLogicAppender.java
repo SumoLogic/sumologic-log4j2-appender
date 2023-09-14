@@ -79,7 +79,7 @@ public class SumoLogicAppender extends AbstractAppender {
                                 Integer messagesPerRequest, Long maxFlushInterval, String sourceName,
                                 String sourceCategory, String sourceHost,
                                 Long flushingAccuracy, Long maxQueueSizeBytes, Boolean flushAllBeforeStopping,
-                                String retryableHttpCodeRegex) {
+                                String retryableHttpCodeRegex, String fields) {
         super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
 
         // Initialize queue
@@ -104,6 +104,7 @@ public class SumoLogicAppender extends AbstractAppender {
         sender.setSourceHost(sourceHost);
         sender.setProxySettings(proxySettings);
         sender.setClientHeaderValue(CLIENT_NAME);
+        sender.setFieldsHeaderValue(fields);
         sender.setRetryableHttpCodeRegex(retryableHttpCodeRegex);
         sender.init();
 
@@ -145,7 +146,8 @@ public class SumoLogicAppender extends AbstractAppender {
             @PluginAttribute(value = "flushingAccuracy", defaultLong = DEFAULT_FLUSHING_ACCURACY) Long flushingAccuracy,
             @PluginAttribute(value = "maxQueueSizeBytes", defaultLong = DEFAULT_MAX_QUEUE_SIZE_BYTES) Long maxQueueSizeBytes,
             @PluginAttribute(value = "flushAllBeforeStopping", defaultBoolean = FLUSH_ALL_MESSAGES_BEFORE_STOPPING) Boolean flushAllBeforeStopping,
-            @PluginAttribute(value = "retryableHttpCodeRegex", defaultString = DEFAULT_RETRY_HTTP_CODE_REGEX) String retryableHttpCodeRegex) {
+            @PluginAttribute(value = "retryableHttpCodeRegex", defaultString = DEFAULT_RETRY_HTTP_CODE_REGEX) String retryableHttpCodeRegex,
+            @PluginAttribute(value = "fields") String fields) {
 
         if (name == null) {
             logger.error("No name provided for SumoLogicAppender");
@@ -165,7 +167,7 @@ public class SumoLogicAppender extends AbstractAppender {
 
         return new SumoLogicAppender(name, filter, layout, true, url, proxySettings, retryInterval, maxNumberOfRetries, connectionTimeout,
                 socketTimeout, messagesPerRequest, maxFlushInterval, sourceName, sourceCategory,
-                sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping, retryableHttpCodeRegex);
+                sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping, retryableHttpCodeRegex, fields);
     }
 
     @PluginBuilderFactory
@@ -222,6 +224,8 @@ public class SumoLogicAppender extends AbstractAppender {
         private boolean flushAllBeforeStopping = FLUSH_ALL_MESSAGES_BEFORE_STOPPING;
         @PluginBuilderAttribute
         private String retryableHttpCodeRegex = DEFAULT_RETRY_HTTP_CODE_REGEX;
+        @PluginBuilderAttribute
+        private String fields;
 
         public Builder setName(final String name) {
             this.name = name;
@@ -338,11 +342,16 @@ public class SumoLogicAppender extends AbstractAppender {
             return this;
         }
 
+        public Builder setFields(String fields) {
+            this.fields = fields;
+            return this;
+        }
+
         @Override
         public SumoLogicAppender build() {
             return SumoLogicAppender.createAppender(name, layout, filter, url, proxyAuth, proxyHost, proxyPort, proxyUser,
                     proxyPassword, proxyDomain, retryInterval, maxNumberOfRetries, connectionTimeout, socketTimeout, messagesPerRequest, maxFlushInterval,
-                    sourceName, sourceCategory, sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping, retryableHttpCodeRegex);
+                    sourceName, sourceCategory, sourceHost, flushingAccuracy, maxQueueSizeBytes, flushAllBeforeStopping, retryableHttpCodeRegex, fields);
         }
     }
 
