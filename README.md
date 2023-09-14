@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/SumoLogic/sumologic-log4j2-appender.svg?branch=master)](https://travis-ci.org/SumoLogic/sumologic-log4j2-appender)
+[![Build Status](https://app.travis-ci.com/SumoLogic/sumologic-log4j2-appender.svg?branch=master)](https://app.travis-ci.com/github/SumoLogic/sumologic-log4j2-appender?branch=master)
 [![codecov.io](https://codecov.io/github/SumoLogic/sumologic-log4j2-appender/coverage.svg?branch=master)](https://codecov.io/github/SumoLogic/sumologic-log4j2-appender?branch=master)
 
 # sumologic-log4j2-appender

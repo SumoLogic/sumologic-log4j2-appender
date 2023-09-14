@@ -78,7 +78,7 @@ public class SumoLogicAppenderTest {
         // Check body
         StringBuffer actual = new StringBuffer();
         for(MaterializedHttpRequest request: handler.getExchanges()) {
-            for (String line : request.getBody().split("\n")) {
+            for (String line : request.getBody().split(System.lineSeparator())) {
                 // Strip timestamp
                 int mainStart = line.indexOf("[main]");
                 String trimmed = line.substring(mainStart);
