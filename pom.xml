@@ -103,10 +103,6 @@
         </plugins>
     </build>
    <distributionManagement>
-   <snapshotRepository>
-      <id>nexus-snapshots</id>
-      <url>http://svn.sonatype.org</url>
-   </snapshotRepository>
   </distributionManagement>
    
   <parent>
@@ -134,8 +130,8 @@
     </dependencies>
 
   <scm>
-    <connection>scm:svn:http://svn.sonatype.org/spice/tags/sumologic-log4j2-appender-1.0</connection>
-    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/sumologic-log4j2-appender-1.0</developerConnection>
-    <url>http://svn.sonatype.org/spice/tags/sumologic-log4j2-appender-1.0</url>
+    <connection>scm:git:git@github.com:SumoLogic/sumologic-log4j2-appender.git</connection>
+    <developerConnection>scm:git:git@github.com:SumoLogic/sumologic-log4j2-appender.git</developerConnection>
+    <url>https://github.com/SumoLogic/sumologic-log4j2-appender</url>
   </scm>
 </project>
